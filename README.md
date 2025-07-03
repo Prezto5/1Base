@@ -9,6 +9,7 @@
 - 🔧 **21st.dev Toolbar** - AI-powered редактирование через браузер
 - 🎯 **React + TypeScript** - Современный стек разработки
 - 💾 **Автосохранение** - Изменения сохраняются автоматически
+- 🔒 **HTTPS поддержка** - Для работы с Storyblok Visual Editor
 
 ## Установка
 
@@ -22,6 +23,10 @@ pnpm install
 
 # Создать .env файл
 cp .env.example .env
+
+# Настроить HTTPS (для Storyblok Visual Editor)
+mkcert -install
+mkcert localhost
 
 # Запустить проект
 pnpm dev
@@ -38,6 +43,30 @@ VITE_STORYBLOK_ACCESS_TOKEN=ваш_api_ключ
 ```
 
 ## Использование
+
+### Обычная разработка
+```bash
+pnpm dev
+# Приложение доступно на http://localhost:5173
+```
+
+### Для работы с Storyblok Visual Editor
+```bash
+# Терминал 1: Запуск dev сервера
+pnpm dev
+
+# Терминал 2: Запуск HTTPS прокси
+pnpm dev:https
+```
+
+**Теперь приложение доступно на:**
+- HTTP: http://localhost:5173 (обычная разработка)
+- HTTPS: https://localhost:3010 (для Storyblok)
+
+### Настройка Preview URL в Storyblok
+1. Перейдите в Settings → Visual Editor
+2. Установите Preview URL: `https://localhost:3010/`
+3. Теперь Visual Editor будет работать!
 
 ### Локальная CMS
 - Наведите курсор на текст для появления кнопки редактирования
@@ -63,12 +92,16 @@ VITE_STORYBLOK_ACCESS_TOKEN=ваш_api_ключ
 - **shadcn/ui** - UI компоненты
 - **Storyblok** - Headless CMS
 - **21st.dev** - AI-powered editing
+- **mkcert** - SSL сертификаты для разработки
 
 ## Команды
 
 ```bash
 # Разработка
-pnpm dev
+pnpm dev                    # HTTP на порту 5173
+
+# Разработка с HTTPS (для Storyblok)
+pnpm dev:https             # HTTPS прокси на порту 3010
 
 # Сборка
 pnpm build
@@ -80,11 +113,30 @@ pnpm preview
 pnpm type-check
 ```
 
+## Решение проблем
+
+### "http:// is not allowed" в Storyblok
+1. Убедитесь, что установлен mkcert: `brew install mkcert`
+2. Создайте сертификаты: `mkcert localhost`
+3. Запустите HTTPS прокси: `pnpm dev:https`
+4. Используйте https://localhost:3010/ в Storyblok
+
+### Проблемы с сертификатами
+```bash
+# Переустановка CA
+mkcert -uninstall
+mkcert -install
+
+# Пересоздание сертификатов
+rm localhost*.pem
+mkcert localhost
+```
+
 ## Деплой
 
 Проект настроен для деплоя на:
-- ✅ Vercel
-- ✅ Netlify
+- ✅ Vercel (с HTTPS по умолчанию)
+- ✅ Netlify (с HTTPS по умолчанию)
 - ✅ GitHub Pages
 
 ## Ссылки
@@ -92,3 +144,4 @@ pnpm type-check
 - [Storyblok редактор](https://app.storyblok.com/#/edit/64979012523641?region=eu-central-1)
 - [21st.dev расширение](https://marketplace.visualstudio.com/items?itemName=21st.21st-extension)
 - [Документация Storyblok](https://www.storyblok.com/docs)
+- [mkcert документация](https://github.com/FiloSottile/mkcert)

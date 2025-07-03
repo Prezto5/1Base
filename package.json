@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:https": "local-ssl-proxy --source 3010 --target 5173 --cert localhost.pem --key localhost-key.pem",
     "build": "vite build",
     "preview": "vite preview",
     "sync": "phion",

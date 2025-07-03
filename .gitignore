@@ -9,6 +9,8 @@ coverage
 # Production
 dist
 build
+dist-ssr
+*.local
 
 # Environment files
 .env
@@ -18,10 +20,15 @@ build
 .env.production.local
 
 # Editor
-.vscode/
-.idea/
-*.swp
-*.swo
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Logs
 logs
@@ -46,6 +53,12 @@ Thumbs.db
 .env.production
 .env.staging
 
+# SSL certificates
+*.pem
+*.key
+localhost.pem
+localhost-key.pem
+
 # Build outputs
 build/
 .next/
@@ -69,4 +82,35 @@ jspm_packages/
 .npm
 
 # Optional eslint cache
-.eslintcache 
+.eslintcache
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json 
