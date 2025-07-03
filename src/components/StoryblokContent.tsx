@@ -16,25 +16,25 @@ export function StoryblokContent({ slug = 'home' }: StoryblokContentProps) {
 
   if (!story || !story.content) {
     return (
-      <Card className="w-full max-w-2xl mt-6">
-        <CardHeader>
-          <CardTitle>Storyblok Content</CardTitle>
+      <Card className="w-full max-w-4xl">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Loading Storyblok Content...</CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Loading content from Storyblok...</p>
+        <CardContent className="text-center">
+          <p className="text-muted-foreground">
+            Загружаем контент из Storyblok CMS...
+          </p>
+          <p className="text-sm text-muted-foreground mt-4">
+            Убедитесь, что API ключ правильно настроен в .env файле
+          </p>
         </CardContent>
       </Card>
     )
   }
 
   return (
-    <Card className="w-full max-w-2xl mt-6">
-      <CardHeader>
-        <CardTitle>Storyblok Content</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <StoryblokComponent blok={story.content} />
-      </CardContent>
-    </Card>
+    <div className="w-full max-w-4xl">
+      <StoryblokComponent blok={story.content} />
+    </div>
   )
 } 
