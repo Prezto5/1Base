@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { TwentyFirstToolbar } from "@21st-extension/toolbar-react"
 import { ReactPlugin } from "@21st-extension/react"
 import { Pencil, Save, X } from "lucide-react"
+import { StoryblokContent } from "@/components/StoryblokContent"
 
 interface ContentData {
   title: string
@@ -173,6 +174,9 @@ function App() {
 
           </CardContent>
         </Card>
+        
+        {/* Storyblok Content */}
+        <StoryblokContent />
       </div>
     </TooltipProvider>
   )

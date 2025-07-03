@@ -83,6 +83,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.7
         version: 1.2.7(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@storyblok/react':
+        specifier: ^5.1.2
+        version: 5.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1206,6 +1209,22 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
+  '@storyblok/js@4.1.1':
+    resolution: {integrity: sha512-bDwyaPRiPiUVpYjk91OVH7GYQ4zdxHTcdf9ah8AtstkKIOokLq1lZKb2CMqcOpOfBM8U4NiT5kKZEBnJtAJ3EA==}
+
+  '@storyblok/react@5.1.2':
+    resolution: {integrity: sha512-0Eqy4RpDYz0jsQZFkdGAZeSd3/TOO+LypdeX7cRuisrdn/YPiPjTvcDvlWmw0UwfxajGC5PpkCIlWo8wP8qZpA==}
+    peerDependencies:
+      next: ^13 || ^14 || ^15
+      react: ^17 || ^18 || ^19
+      react-dom: ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      next:
+        optional: true
+
+  '@storyblok/richtext@3.4.0':
+    resolution: {integrity: sha512-C1XoQjIL9vv1p2MeKVsIMlowpaQbNlBrPys6A/f6RnWqcjs3Nlk1J1FCq8W6rForFpcYS88/tN6vPSnhDuC6BQ==}
+
   '@supabase/auth-js@2.70.0':
     resolution: {integrity: sha512-BaAK/tOAZFJtzF1sE3gJ2FwTjLf4ky3PSvcvLGEgEmO4BSBkwWKu8l67rLLIBZPDnCyV7Owk2uPyKHa0kj5QGg==}
 
@@ -2328,6 +2347,9 @@ packages:
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
+
+  storyblok-js-client@7.0.2:
+    resolution: {integrity: sha512-ye1PBoIjoBJJEtAgwP+9exMuGutknY46Ez/JZHrbIkJp+9j3sdyCXIMepjeK/uJBuqUQpmTocxifCdVOJBsnLw==}
 
   string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
@@ -3583,6 +3605,19 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
+  '@storyblok/js@4.1.1':
+    dependencies:
+      '@storyblok/richtext': 3.4.0
+      storyblok-js-client: 7.0.2
+
+  '@storyblok/react@5.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@storyblok/js': 4.1.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  '@storyblok/richtext@3.4.0': {}
+
   '@supabase/auth-js@2.70.0':
     dependencies:
       '@supabase/node-fetch': 2.6.15
@@ -4771,6 +4806,8 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   source-map-js@1.2.1: {}
+
+  storyblok-js-client@7.0.2: {}
 
   string-width@4.2.3:
     dependencies:

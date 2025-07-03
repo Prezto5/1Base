@@ -1,60 +1,94 @@
-# 🚀 Your Website Project
+# 1Base - Simple CMS with Storyblok
 
-Welcome to your new website! Everything is set up and ready to go. You can start editing right away.
+Простая CMS система с возможностью редактирования контента локально и через Storyblok.
 
-## ✨ What You Can Do
+## Возможности
 
-This project includes everything you need to build a modern website:
+- 🎨 **Локальная CMS** - Редактируйте текст прямо на странице
+- 📝 **Storyblok интеграция** - Управляйте контентом через Storyblok панель
+- 🔧 **21st.dev Toolbar** - AI-powered редактирование через браузер
+- 🎯 **React + TypeScript** - Современный стек разработки
+- 💾 **Автосохранение** - Изменения сохраняются автоматически
 
-- **Easy editing** - Change text, colors, and layout
-- **Live preview** - See changes instantly as you type
-- **Beautiful components** - Pre-built buttons, cards, and more
-- **Auto-sync** - Your changes save automatically to the cloud
-- **Live website** - Share your site with anyone, anywhere
-
-## 🚀 Quick Start
-
-> 🆕 **First time?** The VS Code extension will automatically set up everything when you open this project.
-
-### 1. Start Building
+## Установка
 
 ```bash
-pnpm start
+# Клонировать репозиторий
+git clone https://github.com/Prezto5/1Base.git
+cd 1Base
+
+# Установить зависимости
+pnpm install
+
+# Создать .env файл
+cp .env.example .env
+
+# Запустить проект
+pnpm dev
 ```
 
-This will:
+## Настройка Storyblok
 
-- Set up everything you need automatically
-- Start your website at `http://localhost:5173`
-- Sync your changes to the cloud
-- Set up browser integration in Cursor
+1. Создайте аккаунт в [Storyblok](https://app.storyblok.com/)
+2. Создайте новый Space
+3. Получите API ключ
+4. Добавьте его в `.env` файл:
+```
+VITE_STORYBLOK_ACCESS_TOKEN=ваш_api_ключ
+```
 
-### 2. Start Creating!
+## Использование
 
-- Edit files in the `src/` folder
-- See changes instantly in your browser
-- Your live website updates automatically
-- Use the toolbar in the bottom-right to save changes
+### Локальная CMS
+- Наведите курсор на текст для появления кнопки редактирования
+- Нажмите "Редактировать" для изменения контента
+- Сохраните изменения - они автоматически сохраняются в localStorage
 
-## 📱 Opening Your Website
+### Storyblok
+- Перейдите в [Storyblok редактор](https://app.storyblok.com/)
+- Редактируйте контент в Visual Editor
+- Изменения отобразятся на сайте в реальном времени
 
-**To see your website in Cursor:**
+### 21st.dev Toolbar
+- Инструмент автоматически запускается в development режиме
+- Выбирайте элементы на странице для AI-редактирования
+- Работает только с установленным расширением VS Code
+
+## Стек технологий
+
+- **React 18** - UI библиотека
+- **TypeScript** - Типизация
+- **Vite** - Сборщик
+- **Tailwind CSS** - Стилизация
+- **shadcn/ui** - UI компоненты
+- **Storyblok** - Headless CMS
+- **21st.dev** - AI-powered editing
+
+## Команды
 
 ```bash
-pnpm start
+# Разработка
+pnpm dev
+
+# Сборка
+pnpm build
+
+# Превью сборки
+pnpm preview
+
+# Проверка типов
+pnpm type-check
 ```
 
-**To control your project:**
+## Деплой
 
-- Press `Cmd+Shift+P` in Cursor
-- Type "Start Project" to run the setup
-- Type "Open Preview" to see your website
+Проект настроен для деплоя на:
+- ✅ Vercel
+- ✅ Netlify
+- ✅ GitHub Pages
 
-## 🛠 Available Commands
+## Ссылки
 
-- `pnpm start` - 🚀 Start everything (recommended)
-- `pnpm dev` - Start only the local preview
-- `pnpm sync` - Start only the cloud sync
-- `pnpm build` - 📦 Build your website for sharing
-
-Happy building! 🎉
+- [Storyblok редактор](https://app.storyblok.com/#/edit/64979012523641?region=eu-central-1)
+- [21st.dev расширение](https://marketplace.visualstudio.com/items?itemName=21st.21st-extension)
+- [Документация Storyblok](https://www.storyblok.com/docs)
