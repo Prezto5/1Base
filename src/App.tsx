@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Onboarding } from "@/components/Onboarding"
+import { TwentyFirstToolbar } from "@21st-extension/toolbar-react"
+import { ReactPlugin } from "@21st-extension/react"
 
 function App() {
   const [showMainApp, setShowMainApp] = useState(() => {
@@ -17,6 +19,11 @@ function App() {
   if (showMainApp) {
     return (
       <TooltipProvider>
+        <TwentyFirstToolbar
+          config={{
+            plugins: [ReactPlugin],
+          }}
+        />
         <div className="min-h-screen bg-background flex items-center justify-center p-8">
           <div className="fixed top-6 right-6">
             <ThemeToggle />
@@ -64,7 +71,16 @@ function App() {
     )
   }
 
-  return <Onboarding onComplete={handleOnboardingComplete} />
+  return (
+    <>
+      <TwentyFirstToolbar
+        config={{
+          plugins: [ReactPlugin],
+        }}
+      />
+      <Onboarding onComplete={handleOnboardingComplete} />
+    </>
+  )
 }
 
 export default App
