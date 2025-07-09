@@ -55,11 +55,6 @@ async def get_regions_for_product(product_slug: str, session: AsyncSession = Dep
     ]
     return regions
 
-@app.get("/api/v1/products/{product_slug}/rating", response_model=schemas.ProductRating)
-async def get_product_rating(product_slug: str, session: AsyncSession = Depends(get_session)):
-    rating = await crud.get_product_rating(session, product_slug)
-    return schemas.ProductRating(**rating)
-
 @app.get("/api/v1/products/{product_slug}/{region_slug}", response_model=schemas.ProductVariantDetail)
 async def get_product_variant_detail(product_slug: str, region_slug: str, session: AsyncSession = Depends(get_session)):
     variant = await crud.get_product_variant_detail(session, product_slug, region_slug)
@@ -67,7 +62,6 @@ async def get_product_variant_detail(product_slug: str, region_slug: str, sessio
     return schemas.ProductVariantDetail(
         id=variant.id,
         price=float(variant.price),
-        image_url=variant.image_url,
         total_companies=variant.total_companies,
         companies_with_email=variant.companies_with_email,
         companies_with_phone=variant.companies_with_phone,
@@ -79,6 +73,8 @@ async def get_product_variant_detail(product_slug: str, region_slug: str, sessio
             base_name=variant.product.base_name,
             slug=variant.product.slug,
             description=variant.product.description,
+            image_url=variant.product.image_url,
+            tags=variant.product.tags,
             is_top=variant.product.is_top,
             created_at=variant.product.created_at,
             updated_at=variant.product.updated_at,

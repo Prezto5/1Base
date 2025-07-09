@@ -9,6 +9,8 @@ export interface Product {
   base_name: string;
   slug: string;
   description: string | null;
+  image_url: string | null;
+  tags: string | null;
   is_top: boolean;
   created_at: string;
   updated_at: string;
@@ -17,7 +19,6 @@ export interface Product {
 export interface ProductVariantDetail {
   id: number;
   price: number;
-  image_url: string | null;
   total_companies: number;
   companies_with_email: number;
   companies_with_phone: number;
@@ -33,9 +34,4 @@ export interface RegionInfo {
   name_nominative: string;
   slug: string;
   price: number;
-}
-
-export interface ProductRating {
-  average_rating: number;
-  reviews_count: number;
 } 

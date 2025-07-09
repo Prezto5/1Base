@@ -1,10 +1,9 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getProductVariantDetail, getRegionsForProduct, getProductRating } from '@/lib/api';
+import { getProductVariantDetail, getRegionsForProduct } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import RegionSelector from '@/components/RegionSelector';
 import ProductStats from '@/components/ProductStats';
-import ProductRating from '@/components/ProductRating';
 import ProductTags from '@/components/ProductTags';
 
 interface PageProps {
@@ -36,10 +35,9 @@ export default async function ProductRegionPage({ params }: PageProps) {
     const resolvedParams = await params;
     
     // Получаем данные параллельно для лучшей производительности
-    const [productVariant, regions, rating] = await Promise.all([
+    const [productVariant, regions] = await Promise.all([
       getProductVariantDetail(resolvedParams.productSlug, resolvedParams.regionSlug),
       getRegionsForProduct(resolvedParams.productSlug),
-      getProductRating(resolvedParams.productSlug),
     ]);
 
     return (
@@ -55,11 +53,8 @@ export default async function ProductRegionPage({ params }: PageProps) {
           {/* Карточка продукта */}
           <ProductCard productVariant={productVariant} />
 
-          {/* Рейтинг */}
-          <ProductRating rating={rating} />
-
           {/* Теги */}
-          <ProductTags />
+          <ProductTags tags={productVariant.product.tags} />
 
           {/* Статистика */}
           <ProductStats productVariant={productVariant} />

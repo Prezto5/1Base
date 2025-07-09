@@ -1,4 +1,4 @@
-import { ProductVariantDetail, RegionInfo, ProductRating } from '@/types';
+import { ProductVariantDetail, RegionInfo } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
@@ -37,8 +37,4 @@ export async function getProductVariantDetail(
 
 export async function getRegionsForProduct(productSlug: string): Promise<RegionInfo[]> {
   return fetchAPI<RegionInfo[]>(`/api/v1/products/${productSlug}/regions`);
-}
-
-export async function getProductRating(productSlug: string): Promise<ProductRating> {
-  return fetchAPI<ProductRating>(`/api/v1/products/${productSlug}/rating`);
 } 

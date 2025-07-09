@@ -7,14 +7,12 @@ class RegionInfo(BaseModel):
     slug: str
     price: float
 
-class ProductRating(BaseModel):
-    average_rating: float
-    reviews_count: int
-
 class ProductBase(BaseModel):
     base_name: str
     slug: str
     description: Optional[str]
+    image_url: Optional[str]
+    tags: Optional[str]
     is_top: bool
     created_at: datetime
     updated_at: datetime
@@ -28,7 +26,6 @@ class RegionBase(BaseModel):
 class ProductVariantDetail(BaseModel):
     id: int
     price: float
-    image_url: Optional[str]
     total_companies: int
     companies_with_email: int
     companies_with_phone: int

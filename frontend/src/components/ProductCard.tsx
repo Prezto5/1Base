@@ -7,7 +7,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ productVariant }: ProductCardProps) {
-  const { product, region, price, image_url } = productVariant;
+  const { product, region, price } = productVariant;
 
   return (
     <div className="container max-w-4xl mx-auto my-8 bg-white rounded-xl shadow-lg p-6 text-gray-900">
@@ -20,9 +20,9 @@ export default function ProductCard({ productVariant }: ProductCardProps) {
                 ТОП
               </span>
             )}
-            {image_url ? (
+            {product.image_url ? (
               <Image
-                src={image_url}
+                src={product.image_url}
                 alt={product.base_name}
                 width={320}
                 height={240}
@@ -63,10 +63,6 @@ export default function ProductCard({ productVariant }: ProductCardProps) {
                   duration={1500}
                 />
               </strong>
-            </div>
-            <div className="text-green-600 mb-2">✓ Контакты без повторов</div>
-            <div className="text-sm text-gray-600">
-              Вы можете изменить регион выборки или настроить базу в нашем гибком конфигураторе
             </div>
           </div>
 

@@ -7,7 +7,7 @@ import asyncio
 import random
 from sqlalchemy import func, select
 from database import async_session
-from models import Product, Region, ProductVariant, Review
+from models import Product, Region, ProductVariant
 
 
 async def seed_database():
@@ -57,11 +57,13 @@ async def seed_database():
         await session.flush()
         print(f"Создано регионов: {len(regions)}")
 
-        # Создаем продукт
+        # Создаем продукт с новыми полями
         product = Product(
             base_name="База HoReCa (Хорека)",
             slug="baza-horeca",
             description="Полная база данных заведений общественного питания и гостиничного бизнеса.",
+            image_url="https://i.ibb.co/603DcX47/photo-2025-01-31-15-57-56.jpg",
+            tags="рестораны, кафе, гостиницы, базы отдыха, отели, бары, клубы, столовые, хорека",
             is_top=True
         )
         session.add(product)
@@ -88,7 +90,6 @@ async def seed_database():
                 product_id=product.id,
                 region_id=region.id,
                 price=random.randint(1500, 3000),
-                image_url="https://via.placeholder.com/400x300/8bc34a/ffffff?text=HoReCa+База",
                 total_companies=total_companies,
                 companies_with_email=companies_with_email,
                 companies_with_phone=companies_with_phone,
@@ -117,7 +118,6 @@ async def seed_database():
                 product_id=product.id,
                 region_id=russia_region.id,
                 price=int(avg_price),
-                image_url="https://via.placeholder.com/400x300/8bc34a/ffffff?text=HoReCa+База+Россия",
                 total_companies=total_all_companies,
                 companies_with_email=total_all_email,
                 companies_with_phone=total_all_phone,
@@ -132,18 +132,6 @@ async def seed_database():
         variants.extend(regional_variants)
         session.add_all(variants)
         print(f"Создано вариантов продукта: {len(variants)}")
-
-        # Создаем отзывы
-        reviews = [
-            Review(product_id=product.id, author_name="Иван Петров", rating=5),
-            Review(product_id=product.id, author_name="Мария Сидорова", rating=4),
-            Review(product_id=product.id, author_name="Алексей", rating=5),
-            Review(product_id=product.id, author_name="Елена", rating=4),
-            Review(product_id=product.id, author_name="Дмитрий", rating=5),
-            Review(product_id=product.id, author_name="Анна", rating=4),
-        ]
-        session.add_all(reviews)
-        print(f"Создано отзывов: {len(reviews)}")
 
         await session.commit()
         print("Инициализация базы данных завершена успешно!")
