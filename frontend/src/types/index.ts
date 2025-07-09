@@ -5,6 +5,11 @@ export interface Region {
   slug: string;
 }
 
+export interface ProductInfo {
+  base_name: string;
+  slug: string;
+}
+
 export interface Product {
   base_name: string;
   slug: string;

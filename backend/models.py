@@ -44,13 +44,4 @@ class ProductVariant(Base):
     product = relationship("Product", back_populates="variants")
     region = relationship("Region", back_populates="variants")
 
-    __table_args__ = (UniqueConstraint("product_id", "region_id", name="uix_product_region"),)
-
-class CmsPage(Base):
-    __tablename__ = "cms_pages"
-    id = Column(Integer, primary_key=True)
-    page_name = Column(String(255), nullable=False, unique=True)
-    description = Column(Text)
-    count = Column(Integer)
-    price = Column(Numeric(10, 2))
-    demo_url = Column(String(255)) 
+    __table_args__ = (UniqueConstraint("product_id", "region_id", name="uix_product_region"),) 

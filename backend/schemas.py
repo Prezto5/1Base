@@ -7,6 +7,10 @@ class RegionInfo(BaseModel):
     slug: str
     price: float
 
+class ProductInfo(BaseModel):
+    base_name: str
+    slug: str
+
 class ProductBase(BaseModel):
     base_name: str
     slug: str

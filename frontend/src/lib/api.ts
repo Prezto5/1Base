@@ -1,4 +1,4 @@
-import { ProductVariantDetail, RegionInfo } from '@/types';
+import { ProductVariantDetail, RegionInfo, ProductInfo } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
@@ -26,6 +26,10 @@ async function fetchAPI<T>(endpoint: string): Promise<T> {
     }
     throw new Error(`Failed to fetch ${endpoint}: ${error}`);
   }
+}
+
+export async function getAllProducts(): Promise<ProductInfo[]> {
+  return fetchAPI<ProductInfo[]>('/api/v1/products');
 }
 
 export async function getProductVariantDetail(

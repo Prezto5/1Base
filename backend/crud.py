@@ -6,6 +6,13 @@ from models import Product, Region, ProductVariant
 from typing import Optional, List
 from fastapi import HTTPException, status
 
+async def get_all_products(session: AsyncSession):
+    """Получает список всех продуктов"""
+    query = select(Product)
+    result = await session.execute(query)
+    products = result.scalars().all()
+    return products
+
 async def get_product_variant_detail(session: AsyncSession, product_slug: str, region_slug: str):
     query = (
         select(ProductVariant)

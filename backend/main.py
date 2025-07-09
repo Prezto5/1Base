@@ -22,6 +22,18 @@ app.add_middleware(
 
 # ВАЖНО: Более специфичные маршруты должны быть определены ПЕРЕД более общими!
 
+@app.get("/api/v1/products", response_model=List[schemas.ProductInfo])
+async def get_all_products(session: AsyncSession = Depends(get_session)):
+    """Получает список всех продуктов"""
+    products = await crud.get_all_products(session)
+    return [
+        schemas.ProductInfo(
+            base_name=product.base_name,
+            slug=product.slug
+        )
+        for product in products
+    ]
+
 @app.get("/api/v1/products/{product_slug}/regions", response_model=List[schemas.RegionInfo])
 async def get_regions_for_product(product_slug: str, session: AsyncSession = Depends(get_session)):
     variants = await crud.get_regions_for_product(session, product_slug)
