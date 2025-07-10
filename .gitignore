@@ -22,7 +22,8 @@ eggs/
 # Python library directories
 **/python*/lib/
 **/site-packages/
-lib64/
+backend/lib/
+backend/lib64/
 parts/
 sdist/
 var/
