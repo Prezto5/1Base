@@ -8,6 +8,10 @@ DATABASE_URL = os.getenv(
     "postgresql+asyncpg://antonuricin@localhost:5432/mydb"
 )
 
+# Railway предоставляет URL в формате postgresql://, но нам нужно postgresql+asyncpg://
+if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
+
 engine = create_async_engine(
     DATABASE_URL,
     echo=True,
