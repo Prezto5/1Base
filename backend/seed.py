@@ -15,7 +15,6 @@ PRODUCTS_DATA = [
     {
         "base_name": "База HoReCa (Хорека)",
         "slug": "baza-horeca", 
-        "description": "Полная база данных заведений общественного питания и гостиничного бизнеса.",
         "image_url": "https://i.ibb.co/603DcX47/photo-2025-01-31-15-57-56.jpg",
         "tags": "рестораны, кафе, гостиницы, базы отдыха, отели, бары, клубы, столовые, хорека",
         "is_top": True
@@ -23,7 +22,6 @@ PRODUCTS_DATA = [
     {
         "base_name": "База продавцов OZON",
         "slug": "baza-prodavtsov-ozon",
-        "description": "Полная база данных продавцов и магазинов на платформе OZON.",
         "image_url": "https://i.ibb.co/8zBN9JQ/ozon-sellers-database.jpg",
         "tags": "продавцы, магазины, интернет-торговля, маркетплейс, электронная коммерция, ozon",
         "is_top": False
@@ -31,7 +29,7 @@ PRODUCTS_DATA = [
 ]
 
 
-async def create_product_variants(session, product_id, regions):
+async def create_product_variants(session, product_id, regions, product_info):
     """Создает варианты продукта для всех регионов"""
     variants = []
     regional_variants = []
@@ -48,6 +46,11 @@ async def create_product_variants(session, product_id, regions):
         companies_with_address = int(total_companies * random.uniform(0.9, 1.0))
         companies_with_activity = int(total_companies * random.uniform(0.7, 0.95))
         
+        # Генерируем SEO контент для региона
+        title = f"Купить {product_info['base_name']} в {region.name_prepositional} - обновляемая база данных"
+        description = f"Актуальная база данных '{product_info['base_name']}' для региона {region.name_genitive}. Содержит {total_companies} контактов. Скачайте демо-версию!"
+        seo_text = f"База данных '{product_info['base_name']}' для {region.name_genitive} - это полная и актуальная информация о компаниях региона. В базе содержится {total_companies} проверенных контактов с подробной информацией о каждой компании. Регулярное обновление данных гарантирует актуальность информации. Получите конкурентное преимущество с нашей базой данных!"
+        
         variant = ProductVariant(
             product_id=product_id,
             region_id=region.id,
@@ -59,6 +62,9 @@ async def create_product_variants(session, product_id, regions):
             companies_with_address=companies_with_address,
             companies_with_activity=companies_with_activity,
             is_active=True,
+            title=title,
+            description=description,
+            seo_text=seo_text,
         )
         regional_variants.append(variant)
     
@@ -76,6 +82,11 @@ async def create_product_variants(session, product_id, regions):
         # Средняя цена по всем регионам
         avg_price = sum(v.price for v in regional_variants) / len(regional_variants)
         
+        # Генерируем SEO контент для России
+        russia_title = f"Купить {product_info['base_name']} по всей России - обновляемая база данных"
+        russia_description = f"Актуальная база данных '{product_info['base_name']}' по всей России. Содержит {total_all_companies} контактов. Скачайте демо-версию!"
+        russia_seo_text = f"База данных '{product_info['base_name']}' по всей России - это самая полная и актуальная информация о компаниях всех регионов. В базе содержится {total_all_companies} проверенных контактов с подробной информацией о каждой компании. Объединенная база всех регионов России для максимального охвата рынка. Получите конкурентное преимущество с нашей базой данных!"
+        
         russia_variant = ProductVariant(
             product_id=product_id,
             region_id=russia_region.id,
@@ -87,6 +98,9 @@ async def create_product_variants(session, product_id, regions):
             companies_with_address=total_all_address,
             companies_with_activity=total_all_activity,
             is_active=True,
+            title=russia_title,
+            description=russia_description,
+            seo_text=russia_seo_text,
         )
         variants.append(russia_variant)
     
@@ -150,7 +164,7 @@ async def seed_database():
             print(f"Создан продукт: {product.base_name}")
             
             # Создаем варианты для продукта
-            variants = await create_product_variants(session, product.id, regions)
+            variants = await create_product_variants(session, product.id, regions, product_data)
             all_variants.extend(variants)
             
             # Агрегированные данные для России

@@ -52,6 +52,13 @@ export default function ProductCard({ productVariant }: ProductCardProps) {
             />
           </div>
 
+          {/* SEO текст блок */}
+          {productVariant.seo_text && (
+            <div className="mt-4 mb-6 p-4 bg-gray-50 rounded-lg">
+              <p className="text-gray-700 text-sm leading-relaxed">{productVariant.seo_text}</p>
+            </div>
+          )}
+
           <div className="bg-gray-50 rounded-lg p-4 mb-4 text-gray-900">
             <div className="mb-2">
               Всего компаний в базе: <strong>
@@ -68,7 +75,7 @@ export default function ProductCard({ productVariant }: ProductCardProps) {
 
           <ul className="space-y-2 mb-6 text-gray-900">
             <li>✓ 6 месяцев бесплатного обновления</li>
-            <li><strong>База обновлена:</strong> {new Date().toLocaleDateString('ru-RU')}</li>
+            <li><strong>База обновлена:</strong> {new Date(product.updated_at).toLocaleDateString('ru-RU')}</li>
             <li><strong>Наш телефон:</strong> <a href="tel:88007752912" className="text-blue-600">8 800 775-29-12</a></li>
           </ul>
 

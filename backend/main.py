@@ -81,10 +81,13 @@ async def get_product_variant_detail(product_slug: str, region_slug: str, sessio
         companies_with_address=variant.companies_with_address,
         companies_with_activity=variant.companies_with_activity,
         is_active=variant.is_active,
+        # SEO fields now come from variant instead of product
+        title=variant.title,
+        description=variant.description,
+        seo_text=variant.seo_text,
         product=schemas.ProductBase(
             base_name=variant.product.base_name,
             slug=variant.product.slug,
-            description=variant.product.description,
             image_url=variant.product.image_url,
             tags=variant.product.tags,
             is_top=variant.product.is_top,

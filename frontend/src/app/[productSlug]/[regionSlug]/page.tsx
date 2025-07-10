@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getProductVariantDetail, getRegionsForProduct } from '@/lib/api';
+import { getProductVariantDetail, getRegionsForProduct, getAllProducts } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import RegionSelector from '@/components/RegionSelector';
 import ProductStats from '@/components/ProductStats';
@@ -13,15 +13,50 @@ interface PageProps {
   }>;
 }
 
+// Отключаем динамические параметры - только предварительно сгенерированные страницы
+export const dynamicParams = false;
+
+// Генерация статических параметров для всех страниц продуктов
+export async function generateStaticParams() {
+  try {
+    // Получаем все продукты
+    const products = await getAllProducts();
+    
+    // Для каждого продукта получаем все его регионы
+    const params = await Promise.all(
+      products.map(async (product) => {
+        try {
+          const regions = await getRegionsForProduct(product.slug);
+          return regions.map((region) => ({
+            productSlug: product.slug,
+            regionSlug: region.slug,
+          }));
+        } catch (error) {
+          console.error(`Error getting regions for product ${product.slug}:`, error);
+          return [];
+        }
+      })
+    );
+    
+    // Флэттенинг массива массивов в один массив
+    const staticParams = params.flat();
+    
+    console.log(`Generating ${staticParams.length} static pages`);
+    return staticParams;
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   try {
     const resolvedParams = await params;
     const productVariant = await getProductVariantDetail(resolvedParams.productSlug, resolvedParams.regionSlug);
-    const title = `База ${productVariant.product.base_name} в ${productVariant.region.name_prepositional}`;
     
     return {
-      title,
-      description: productVariant.product.description || 'База данных HoReCa',
+      title: productVariant.title || `База ${productVariant.product.base_name} в ${productVariant.region.name_prepositional}`,
+      description: productVariant.description || 'База данных HoReCa',
     };
   } catch {
     return {

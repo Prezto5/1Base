@@ -7,8 +7,7 @@ class Product(Base):
     __tablename__ = "products"
     id = Column(Integer, primary_key=True)
     base_name = Column(String(255), nullable=False)
-    slug = Column(String(255), nullable=False, unique=True)
-    description = Column(Text)
+    slug = Column(String(255), nullable=False, unique=True, index=True)
     image_url = Column(String(255))
     tags = Column(Text)
     is_top = Column(Boolean, default=False)
@@ -23,7 +22,7 @@ class Region(Base):
     name_nominative = Column(String(100), nullable=False)
     name_genitive = Column(String(100), nullable=False)
     name_prepositional = Column(String(100), nullable=False)
-    slug = Column(String(100), nullable=False, unique=True)
+    slug = Column(String(100), nullable=False, unique=True, index=True)
 
     variants = relationship("ProductVariant", back_populates="region")
 
@@ -39,7 +38,11 @@ class ProductVariant(Base):
     companies_with_site = Column(Integer, default=0, nullable=False)
     companies_with_address = Column(Integer, default=0, nullable=False)
     companies_with_activity = Column(Integer, default=0, nullable=False)
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Boolean, default=True, index=True)
+    # SEO fields moved from Product to ProductVariant
+    title = Column(String(255), nullable=True)
+    description = Column(Text, nullable=True)
+    seo_text = Column(Text, nullable=True)
 
     product = relationship("Product", back_populates="variants")
     region = relationship("Region", back_populates="variants")

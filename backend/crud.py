@@ -1,14 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, load_only
 from sqlalchemy import func
 from models import Product, Region, ProductVariant
 from typing import Optional, List
 from fastapi import HTTPException, status
 
 async def get_all_products(session: AsyncSession):
-    """Получает список всех продуктов"""
-    query = select(Product)
+    """Получает список всех продуктов с загрузкой только необходимых полей"""
+    query = select(Product).options(load_only(Product.base_name, Product.slug))
     result = await session.execute(query)
     products = result.scalars().all()
     return products

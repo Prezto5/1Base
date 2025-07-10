@@ -9,11 +9,13 @@ class ApiError extends Error {
   }
 }
 
-async function fetchAPI<T>(endpoint: string): Promise<T> {
+async function fetchAPI<T>(endpoint: string, revalidateTime: number = 3600): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
   
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      next: { revalidate: revalidateTime }
+    });
     
     if (!response.ok) {
       throw new ApiError(response.status, `HTTP error! status: ${response.status}`);
@@ -29,7 +31,7 @@ async function fetchAPI<T>(endpoint: string): Promise<T> {
 }
 
 export async function getAllProducts(): Promise<ProductInfo[]> {
-  return fetchAPI<ProductInfo[]>('/api/v1/products');
+  return fetchAPI<ProductInfo[]>('/api/v1/products', 86400); // 24 часа
 }
 
 export async function getProductVariantDetail(

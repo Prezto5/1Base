@@ -14,7 +14,6 @@ class ProductInfo(BaseModel):
 class ProductBase(BaseModel):
     base_name: str
     slug: str
-    description: Optional[str]
     image_url: Optional[str]
     tags: Optional[str]
     is_top: bool
@@ -37,6 +36,10 @@ class ProductVariantDetail(BaseModel):
     companies_with_address: int
     companies_with_activity: int
     is_active: bool
+    # SEO fields moved from Product to ProductVariant
+    title: Optional[str]
+    description: Optional[str]
+    seo_text: Optional[str]
     product: ProductBase
     region: RegionBase
 

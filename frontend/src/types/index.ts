@@ -13,7 +13,6 @@ export interface ProductInfo {
 export interface Product {
   base_name: string;
   slug: string;
-  description: string | null;
   image_url: string | null;
   tags: string | null;
   is_top: boolean;
@@ -31,6 +30,10 @@ export interface ProductVariantDetail {
   companies_with_address: number;
   companies_with_activity: number;
   is_active: boolean;
+  // SEO fields moved from Product to ProductVariant
+  title: string | null;
+  description: string | null;
+  seo_text: string | null;
   product: Product;
   region: Region;
 }
