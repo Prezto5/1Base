@@ -21,9 +21,11 @@ export default function CountUp({
   formatNumber = true,
   decimals = 0
 }: CountUpProps) {
-  const [count, setCount] = useState(0);
+  // ИСПРАВЛЕНО: Начинаем с конечного значения для SEO
+  const [count, setCount] = useState(end);
 
   useEffect(() => {
+    // Запускаем анимацию только на клиенте после гидратации
     let startTime: number | null = null;
     let animationFrame: number;
 
@@ -42,14 +44,17 @@ export default function CountUp({
       }
     };
 
-    // Сброс счетчика и запуск анимации
-    setCount(0);
-    animationFrame = requestAnimationFrame(animate);
+    // Небольшая задержка для лучшего UX
+    const timeoutId = setTimeout(() => {
+      setCount(0); // Сброс только для анимации
+      animationFrame = requestAnimationFrame(animate);
+    }, 200);
 
     return () => {
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
+      clearTimeout(timeoutId);
     };
   }, [end, duration]);
 
