@@ -1,5 +1,5 @@
 import { ProductVariantDetail } from '@/types';
-import CountUp from './CountUp';
+import { formatNumber } from '@/lib/utils';
 
 interface ProductStatsProps {
   productVariant: ProductVariantDetail;
@@ -45,13 +45,7 @@ export default function ProductStats({ productVariant }: ProductStatsProps) {
         {stats.map((stat, index) => (
           <div key={`${region.slug}-${index}`} className="bg-gray-50 rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-green-600 mb-1">
-              <CountUp 
-                key={`stat-${region.slug}-${index}`}
-                end={stat.value} 
-                suffix=" шт."
-                formatNumber={true}
-                duration={1200 + index * 100}
-              />
+              {formatNumber(stat.value, ' шт.')}
             </div>
             <div className="text-sm text-gray-700">
               {stat.label}

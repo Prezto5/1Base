@@ -1,6 +1,6 @@
 import { ProductVariantDetail } from '@/types';
 import Image from 'next/image';
-import CountUp from './CountUp';
+import { formatNumber } from '@/lib/utils';
 
 interface ProductCardProps {
   productVariant: ProductVariantDetail;
@@ -43,13 +43,7 @@ export default function ProductCard({ productVariant }: ProductCardProps) {
         <div className="flex-1">
           <h1 className="text-2xl font-bold mb-2 text-gray-900">{product.base_name}</h1>
           <div className="text-3xl font-bold text-green-600 mb-4">
-            <CountUp 
-              key={`price-${region.slug}`}
-              end={price} 
-              suffix=" руб."
-              formatNumber={true}
-              duration={1200}
-            />
+            {formatNumber(price, ' руб.')}
           </div>
 
           {/* SEO текст блок */}
@@ -62,13 +56,7 @@ export default function ProductCard({ productVariant }: ProductCardProps) {
           <div className="bg-gray-50 rounded-lg p-4 mb-4 text-gray-900">
             <div className="mb-2">
               Всего компаний в базе: <strong>
-                <CountUp 
-                  key={`total-${region.slug}`}
-                  end={productVariant.total_companies} 
-                  suffix=" шт."
-                  formatNumber={true}
-                  duration={1500}
-                />
+                {formatNumber(productVariant.total_companies, ' шт.')}
               </strong>
             </div>
           </div>
