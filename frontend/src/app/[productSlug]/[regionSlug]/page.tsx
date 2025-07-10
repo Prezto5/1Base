@@ -13,9 +13,6 @@ interface PageProps {
   }>;
 }
 
-// Отключаем динамические параметры - только предварительно сгенерированные страницы
-export const dynamicParams = false;
-
 // Генерация статических параметров для всех страниц продуктов
 export async function generateStaticParams() {
   try {
@@ -45,7 +42,11 @@ export async function generateStaticParams() {
     return staticParams;
   } catch (error) {
     console.error('Error generating static params:', error);
-    return [];
+    // Возвращаем базовые страницы если API недоступен
+    return [
+      { productSlug: 'baza-horeca', regionSlug: 'russia' },
+      { productSlug: 'baza-prodavtsov-ozon', regionSlug: 'russia' }
+    ];
   }
 }
 

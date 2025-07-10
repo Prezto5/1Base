@@ -24,7 +24,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const products = await getAllProducts();
+  let products;
+  
+  try {
+    products = await getAllProducts();
+  } catch (error) {
+    console.error('Failed to load products in layout:', error);
+    // Фолбэк продукты если API недоступен
+    products = [
+      { base_name: "База HoReCa (Хорека)", slug: "baza-horeca" },
+      { base_name: "База продавцов OZON", slug: "baza-prodavtsov-ozon" }
+    ];
+  }
 
   return (
     <html lang="ru">
