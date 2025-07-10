@@ -7,10 +7,10 @@ import ProductStats from '@/components/ProductStats';
 import ProductTags from '@/components/ProductTags';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     productSlug: string;
     regionSlug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
