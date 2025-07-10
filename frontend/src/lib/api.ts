@@ -1,6 +1,6 @@
 import { ProductVariantDetail, RegionInfo, ProductInfo } from '@/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {
