@@ -5,6 +5,7 @@ from database import get_session
 import crud
 import schemas
 from typing import List
+import random
 
 app = FastAPI()
 
@@ -71,6 +72,11 @@ async def get_regions_for_product(product_slug: str, session: AsyncSession = Dep
 async def get_product_variant_detail(product_slug: str, region_slug: str, session: AsyncSession = Depends(get_session)):
     variant = await crud.get_product_variant_detail(session, product_slug, region_slug)
 
+    # Generate stable random rating data based on variant ID
+    random.seed(variant.id)
+    rating_value = round(random.uniform(4.7, 5.0), 1)
+    review_count = random.randint(30, 300)
+
     return schemas.ProductVariantDetail(
         id=variant.id,
         price=float(variant.price),
@@ -85,7 +91,11 @@ async def get_product_variant_detail(product_slug: str, region_slug: str, sessio
         title=variant.title,
         description=variant.description,
         seo_text=variant.seo_text,
+        # Generated rating data
+        ratingValue=rating_value,
+        reviewCount=review_count,
         product=schemas.ProductBase(
+            id=variant.product.id,
             base_name=variant.product.base_name,
             slug=variant.product.slug,
             image_url=variant.product.image_url,
@@ -95,6 +105,7 @@ async def get_product_variant_detail(product_slug: str, region_slug: str, sessio
             updated_at=variant.product.updated_at,
         ),
         region=schemas.RegionBase(
+            id=variant.region.id,
             name_nominative=variant.region.name_nominative,
             name_genitive=variant.region.name_genitive,
             name_prepositional=variant.region.name_prepositional,

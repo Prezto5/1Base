@@ -75,8 +75,50 @@ export default async function ProductRegionPage({ params }: PageProps) {
       getRegionsForProduct(resolvedParams.productSlug),
     ]);
 
+    // Генерируем полный URL для JSON-LD
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ваш-сайт.ru';
+    const fullUrl = `${baseUrl}/${resolvedParams.productSlug}/${resolvedParams.regionSlug}`;
+
+    // Создаем объект JSON-LD микроразметки
+    const jsonLd = {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": `${productVariant.product.base_name} в ${productVariant.region.name_prepositional}`,
+      "description": productVariant.description || `База данных ${productVariant.product.base_name} для ${productVariant.region.name_genitive}`,
+      "image": productVariant.product.image_url,
+      "sku": `RU-${productVariant.product.id}-${productVariant.region.id}`,
+      "offers": {
+        "@type": "Offer",
+        "url": fullUrl,
+        "priceCurrency": "RUB",
+        "price": productVariant.price,
+        "availability": productVariant.is_active ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        "seller": {
+          "@type": "Organization",
+          "name": "1Base"
+        }
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": productVariant.ratingValue,
+        "reviewCount": productVariant.reviewCount,
+        "bestRating": 5,
+        "worstRating": 1
+      },
+      "brand": {
+        "@type": "Brand",
+        "name": "1Base"
+      }
+    };
+
     return (
       <div className="min-h-screen bg-gray-50 text-gray-900">
+        {/* JSON-LD микроразметка */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        
         <div className="container max-w-4xl mx-auto py-8 px-4">
           {/* Селектор региона */}
           <RegionSelector

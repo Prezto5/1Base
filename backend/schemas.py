@@ -12,6 +12,7 @@ class ProductInfo(BaseModel):
     slug: str
 
 class ProductBase(BaseModel):
+    id: int
     base_name: str
     slug: str
     image_url: Optional[str]
@@ -21,6 +22,7 @@ class ProductBase(BaseModel):
     updated_at: datetime
 
 class RegionBase(BaseModel):
+    id: int
     name_nominative: str
     name_genitive: str
     name_prepositional: str
@@ -40,6 +42,9 @@ class ProductVariantDetail(BaseModel):
     title: Optional[str]
     description: Optional[str]
     seo_text: Optional[str]
+    # Rating fields for JSON-LD and visual display
+    ratingValue: float = Field(..., ge=1.0, le=5.0, description="Product rating from 1 to 5")
+    reviewCount: int = Field(..., ge=0, description="Number of reviews")
     product: ProductBase
     region: RegionBase
 
