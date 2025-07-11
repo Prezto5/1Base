@@ -1,13 +1,14 @@
 import { ProductVariantDetail } from '@/types';
 import Image from 'next/image';
 import { formatNumber } from '@/lib/utils';
+import Rating from './Rating';
 
 interface ProductCardProps {
   productVariant: ProductVariantDetail;
 }
 
 export default function ProductCard({ productVariant }: ProductCardProps) {
-  const { product, region, price } = productVariant;
+  const { product, region, price, ratingValue, reviewCount } = productVariant;
 
   return (
     <div className="container max-w-4xl mx-auto my-8 bg-white rounded-xl shadow-lg p-6 text-gray-900">
@@ -36,6 +37,7 @@ export default function ProductCard({ productVariant }: ProductCardProps) {
           </div>
           <div className="text-center mt-3">
             <h2 className="text-xl font-bold text-gray-900">{region.name_nominative.toUpperCase()}</h2>
+            <Rating ratingValue={ratingValue} reviewCount={reviewCount} />
           </div>
         </div>
 

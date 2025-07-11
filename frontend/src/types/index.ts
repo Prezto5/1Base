@@ -1,4 +1,5 @@
 export interface Region {
+  id: number;
   name_nominative: string;
   name_genitive: string;
   name_prepositional: string;
@@ -11,6 +12,7 @@ export interface ProductInfo {
 }
 
 export interface Product {
+  id: number;
   base_name: string;
   slug: string;
   image_url: string | null;
@@ -34,6 +36,9 @@ export interface ProductVariantDetail {
   title: string | null;
   description: string | null;
   seo_text: string | null;
+  // Rating fields for JSON-LD and visual display
+  ratingValue: number;
+  reviewCount: number;
   product: Product;
   region: Region;
 }
