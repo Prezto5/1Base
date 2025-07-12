@@ -37,34 +37,38 @@ export function RealtimeDataProvider({ children }: RealtimeDataProviderProps) {
   
   // Мемоизируем обработчики чтобы предотвратить пересоздание WebSocket соединения
   const handleWebSocketMessage = useCallback((message: WebSocketMessage) => {
+    console.log('📥 Real-time сообщение:', message.type);
     switch (message.type) {
       case 'CONNECTION_ESTABLISHED':
-        // Соединение установлено
+        console.log('🎉 WebSocket соединение установлено');
         break;
         
       case 'PRODUCT_VARIANT_UPDATE':
         if (message.payload) {
+          const variant = message.payload as ProductVariantDetail;
+          console.log(`📦 Обновление варианта ID ${variant.id}: цена ${variant.price}, компаний ${variant.total_companies}`);
+          
           // Обновляем состояние с новыми данными варианта
           setUpdatedVariants(prev => {
             const newMap = new Map(prev);
-            newMap.set((message.payload as ProductVariantDetail).id, message.payload as ProductVariantDetail);
+            newMap.set(variant.id, variant);
             return newMap;
           });
         }
         break;
         
       default:
-        // Неизвестный тип сообщения
+        console.log('⚠️ Неизвестный тип WebSocket сообщения:', message.type);
         break;
     }
   }, []);
 
   const onConnect = useCallback(() => {
-    // WebSocket подключен
+    console.log('✅ Real-time контекст: WebSocket подключен');
   }, []);
 
   const onDisconnect = useCallback(() => {
-    // WebSocket отключен
+    console.log('❌ Real-time контекст: WebSocket отключен');
   }, []);
 
   // Мемоизируем options объект
@@ -126,6 +130,7 @@ export function useVariantWithRealtime(initialVariant: ProductVariantDetail): Pr
     // Проверяем есть ли обновленная версия варианта
     const updatedVariant = getUpdatedVariant(initialVariant.id);
     if (updatedVariant) {
+      console.log(`🔄 Применение real-time обновления для варианта ${updatedVariant.id}: ${initialVariant.price} → ${updatedVariant.price}`);
       setCurrentVariant(updatedVariant);
     } else {
       setCurrentVariant(initialVariant);

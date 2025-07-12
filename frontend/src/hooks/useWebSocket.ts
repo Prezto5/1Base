@@ -70,6 +70,7 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
     }
 
     try {
+      console.log(`🔌 WebSocket подключение к: ${url}`);
       const ws = new WebSocket(url);
       websocketRef.current = ws;
       isManualCloseRef.current = false;
@@ -77,6 +78,7 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
       ws.onopen = () => {
         if (!mountedRef.current) return;
         
+        console.log('✅ WebSocket подключен');
         setIsConnected(true);
         setConnectionError(null);
         reconnectAttemptsRef.current = 0;
@@ -89,16 +91,18 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
         
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
+          console.log('📨 WebSocket сообщение:', message.type);
           setLastMessage(message);
           options.onMessage?.(message);
         } catch {
-          // Ошибка парсинга сообщения
+          console.error('❌ Ошибка парсинга WebSocket сообщения');
         }
       };
 
       ws.onclose = (event) => {
         if (!mountedRef.current) return;
         
+        console.log(`🔌 WebSocket закрыт: код ${event.code}, причина: ${event.reason || 'не указана'}`);
         setIsConnected(false);
         websocketRef.current = null;
         options.onDisconnect?.();
@@ -106,6 +110,8 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
         if (shouldReconnect(event)) {
           const attempt = reconnectAttemptsRef.current + 1;
           const delay = getReconnectDelay(attempt - 1);
+          
+          console.log(`🔄 Переподключение ${attempt}/${maxReconnectAttempts} через ${delay}ms`);
           
           reconnectTimeoutRef.current = setTimeout(() => {
             if (mountedRef.current) {
@@ -115,6 +121,7 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
           }, delay);
         } else if (reconnectAttemptsRef.current >= maxReconnectAttempts) {
           const errorMsg = `Не удалось переподключиться после ${maxReconnectAttempts} попыток`;
+          console.error('❌ WebSocket:', errorMsg);
           setConnectionError(errorMsg);
         }
       };
@@ -122,11 +129,13 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
       ws.onerror = () => {
         if (!mountedRef.current) return;
         
+        console.error('❌ WebSocket ошибка соединения');
         setConnectionError('Ошибка WebSocket соединения');
         options.onError?.(new Event('error'));
       };
 
     } catch {
+      console.error('❌ Не удалось создать WebSocket соединение');
       setConnectionError('Не удалось создать WebSocket соединение');
     }
   }, [url, options, shouldReconnect, getReconnectDelay, maxReconnectAttempts, clearReconnectTimeout]);
@@ -136,6 +145,7 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
     clearReconnectTimeout();
 
     if (websocketRef.current && websocketRef.current.readyState !== WebSocket.CLOSED) {
+      console.log('🔌 Ручное закрытие WebSocket');
       websocketRef.current.close(1000, 'Соединение закрыто пользователем');
     }
 
@@ -147,10 +157,13 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
   const sendMessage = useCallback((message: string) => {
     if (websocketRef.current?.readyState === WebSocket.OPEN) {
       websocketRef.current.send(message);
+    } else {
+      console.warn('⚠️ WebSocket не подключен, сообщение не отправлено');
     }
   }, []);
 
   const reconnect = useCallback(() => {
+    console.log('🔄 Ручное переподключение WebSocket');
     disconnect();
     reconnectAttemptsRef.current = 0;
     setConnectionError(null);
