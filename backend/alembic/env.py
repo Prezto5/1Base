@@ -1,4 +1,5 @@
 import asyncio
+import os
 from logging.config import fileConfig
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy import pool
@@ -19,6 +20,19 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
+
+# Получаем DATABASE_URL из переменных окружения
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    # Railway предоставляет URL в формате postgresql://, но нам нужно postgresql+asyncpg://
+    if database_url.startswith("postgresql://"):
+        database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    
+    # Устанавливаем URL в конфигурацию Alembic
+    config.set_main_option("sqlalchemy.url", database_url)
+    print(f"🔗 Alembic использует DATABASE_URL: {database_url[:50]}...")
+else:
+    print("❌ DATABASE_URL не найдена, используется URL из alembic.ini")
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

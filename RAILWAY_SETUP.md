@@ -29,6 +29,9 @@ https://your-backend-production-xxxx.up.railway.app
 
 ```typescript
 // frontend/src/lib/api.ts
+import { ProductVariantDetail, RegionInfo, ProductInfo } from '@/types';
+
+// Используем переменную окружения с fallback для локальной разработки
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 ```
 

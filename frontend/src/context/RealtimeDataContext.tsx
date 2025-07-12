@@ -158,12 +158,24 @@ export function useVariantWithRealtime(initialVariant: ProductVariantDetail): Pr
     // Проверяем есть ли обновленная версия варианта
     const updatedVariant = getUpdatedVariant(initialVariant.id);
     if (updatedVariant) {
-      console.log(`🔄 Применение real-time обновления для варианта ${updatedVariant.id}: ${initialVariant.price} → ${updatedVariant.price}`);
+      console.log(`🔄 Применение real-time обновления для варианта ${updatedVariant.id}: цена ${initialVariant.price} → ${updatedVariant.price}, компании ${initialVariant.total_companies} → ${updatedVariant.total_companies}`);
       setCurrentVariant(updatedVariant);
     } else {
+      // Если нет обновлений, используем initial данные
       setCurrentVariant(initialVariant);
     }
-  }, [initialVariant, getUpdatedVariant, currentVariant.price, currentVariant.total_companies]);
+  }, [initialVariant.id, getUpdatedVariant]); // Убрал зависимости которые могут вызывать лишние обновления
+
+  // Отслеживаем изменения в updatedVariants напрямую
+  useEffect(() => {
+    const updatedVariant = getUpdatedVariant(initialVariant.id);
+    if (updatedVariant && 
+        (updatedVariant.price !== currentVariant.price || 
+         updatedVariant.total_companies !== currentVariant.total_companies)) {
+      console.log(`🔄 Обнаружено обновление для варианта ${updatedVariant.id}: применяем изменения`);
+      setCurrentVariant(updatedVariant);
+    }
+  }, [getUpdatedVariant, initialVariant.id, currentVariant.price, currentVariant.total_companies]);
 
   return currentVariant;
 } 
