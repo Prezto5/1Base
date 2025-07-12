@@ -11,7 +11,7 @@ DEBUG=false
 CORS_ORIGINS=https://myapp-prod.railway.app
 
 # Frontend
-NEXT_PUBLIC_API_URL=frontend-production-8178.up.railway.app
+NEXT_PUBLIC_API_URL=https://frontend-production-8178.up.railway.app
 NEXT_PUBLIC_WS_URL=wss://backend-production-7dfe.up.railway.app/ws/updates
 NEXT_PUBLIC_ENV=production
 NEXT_PUBLIC_GA_ID=GA-PRODUCTION-ID
