@@ -26,7 +26,13 @@ class DatabaseListener:
         
     async def connect(self):
         """Устанавливает соединение с базой данных для прослушивания"""
-        database_url = os.getenv("DATABASE_URL", "postgresql://antonuricin@localhost:5432/mydb")
+        database_url = os.getenv("DATABASE_URL")
+        
+        if not database_url:
+            logger.error("❌ DATABASE_URL не задана! Database Listener не может подключиться к БД")
+            raise Exception("DATABASE_URL environment variable is not set")
+        
+        logger.info(f"🔗 Database Listener подключается к БД: {database_url[:50]}...")
         
         # Конвертируем URL для asyncpg (убираем +asyncpg если есть)
         if "+asyncpg" in database_url:
@@ -34,9 +40,14 @@ class DatabaseListener:
             
         try:
             self.connection = await asyncpg.connect(database_url)
-            logger.info("Соединение с БД для прослушивания уведомлений установлено")
+            logger.info("✅ Database Listener: соединение с БД для прослушивания уведомлений установлено")
+            
+            # Тест соединения - проверяем что мы подключены к правильной БД
+            result = await self.connection.fetchval("SELECT current_database()")
+            logger.info(f"📊 Database Listener подключен к БД: {result}")
+            
         except Exception as e:
-            logger.error(f"Ошибка подключения к БД для прослушивания: {e}")
+            logger.error(f"❌ Database Listener: ошибка подключения к БД: {e}")
             raise
     
     async def disconnect(self):
@@ -74,6 +85,8 @@ class DatabaseListener:
                 logger.warning("Получено уведомление без ID варианта продукта")
                 return
             
+            logger.info(f"🔄 Обработка изменения варианта ID {variant_id}")
+            
             # Получаем актуальные данные варианта из БД
             async with async_session() as session:
                 # Ищем variant по ID и получаем полную информацию с продуктом и регионом
@@ -95,6 +108,8 @@ class DatabaseListener:
                 if not variant:
                     logger.warning(f"Вариант продукта с ID {variant_id} не найден")
                     return
+                
+                logger.info(f"📦 Найден вариант: {variant.product.base_name} в {variant.region.name_nominative}, цена: {variant.price}")
                 
                 # Формируем сообщение для отправки клиентам
                 message = {
@@ -132,11 +147,18 @@ class DatabaseListener:
                     }
                 }
                 
+                # Проверяем количество подключенных клиентов
+                connection_count = manager.get_connection_count()
+                logger.info(f"📡 Отправка обновления {connection_count} подключенным клиентам")
+                
                 # Отправляем сообщение всем подключенным клиентам
                 await manager.broadcast(message)
+                logger.info(f"✅ Обновление отправлено для варианта ID {variant_id}")
                 
         except Exception as e:
-            logger.error(f"Ошибка обработки изменения варианта продукта: {e}")
+            logger.error(f"❌ Ошибка обработки изменения варианта продукта: {e}")
+            import traceback
+            logger.error(f"Полная трассировка: {traceback.format_exc()}")
     
     async def handle_product_change(self, product_data):
         """Обрабатывает изменения в products"""
