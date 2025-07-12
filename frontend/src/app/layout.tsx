@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { getAllProducts } from "@/lib/api";
 import ProductSidebar from "@/components/ProductSidebar";
+import { RealtimeDataProvider } from "@/context/RealtimeDataContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,12 +43,14 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex">
-          <ProductSidebar products={products} />
-          <main className="flex-1">
-            {children}
-          </main>
-        </div>
+        <RealtimeDataProvider>
+          <div className="flex">
+            <ProductSidebar products={products} />
+            <main className="flex-1">
+              {children}
+            </main>
+          </div>
+        </RealtimeDataProvider>
       </body>
     </html>
   );

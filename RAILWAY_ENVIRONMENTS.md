@@ -1,92 +1,20 @@
 # Railway Environments Setup Guide
 
-## 🏗️ Архитектура окружений
-
-```
-Production (main)     ← Stable releases
-     ↑
-Staging (staging)     ← Testing before production  
-     ↑
-Development (develop) ← Active development
-```
-
-## 1. **Создание Git веток**
-
-```bash
-# Создаем ветку для разработки
-git checkout -b develop
-
-# Создаем ветку для staging
-git checkout -b staging
-
-# Возвращаемся в main
-git checkout main
-
-# Пушим новые ветки
-git push -u origin develop
-git push -u origin staging
-```
-
-## 2. **Настройка Railway Projects**
-
-### A. **Production Environment**
-```yaml
-Project Name: myapp-prod
-Branch: main
-Services:
-  - Backend (FastAPI)
-  - Frontend (Next.js)
-  - Database (PostgreSQL)
-```
-
-### B. **Staging Environment**
-```yaml
-Project Name: myapp-staging
-Branch: staging
-Services:
-  - Backend (FastAPI)
-  - Frontend (Next.js)
-  - Database (PostgreSQL)
-```
-
-### C. **Development Environment**
-```yaml
-Project Name: myapp-dev
-Branch: develop
-Services:
-  - Backend (FastAPI)
-  - Frontend (Next.js)
-  - Database (PostgreSQL)
-```
-
 ## 3. **Переменные окружения для каждого environment**
 
 ### 🔴 **Production Variables**
 ```bash
 # Backend
-DATABASE_URL=postgresql://prod_user:prod_pass@prod_host:5432/prod_db
+DATABASE_URL=postgresql://postgres:ZFbbYebbkRrtFpRDQTyRwnVotKdAHLUE@shinkansen.proxy.rlwy.net:15068/railway
 API_ENV=production
 DEBUG=false
 CORS_ORIGINS=https://myapp-prod.railway.app
 
 # Frontend
-NEXT_PUBLIC_API_URL=https://myapp-prod-backend.railway.app
+NEXT_PUBLIC_API_URL=frontend-production-8178.up.railway.app
+NEXT_PUBLIC_WS_URL=wss://backend-production-7dfe.up.railway.app/ws/updates
 NEXT_PUBLIC_ENV=production
 NEXT_PUBLIC_GA_ID=GA-PRODUCTION-ID
-```
-
-### 🟡 **Staging Variables**
-```bash
-# Backend
-DATABASE_URL=postgresql://staging_user:staging_pass@staging_host:5432/staging_db
-API_ENV=staging
-DEBUG=true
-CORS_ORIGINS=https://myapp-staging.railway.app
-
-# Frontend
-NEXT_PUBLIC_API_URL=https://myapp-staging-backend.railway.app
-NEXT_PUBLIC_ENV=staging
-NEXT_PUBLIC_GA_ID=GA-STAGING-ID
 ```
 
 ### 🟢 **Development Variables**
@@ -95,17 +23,18 @@ NEXT_PUBLIC_GA_ID=GA-STAGING-ID
 DATABASE_URL=postgresql://dev_user:dev_pass@dev_host:5432/dev_db
 API_ENV=development
 DEBUG=true
-CORS_ORIGINS=https://myapp-dev.railway.app,http://localhost:3000
+CORS_ORIGINS=https://backend-dev-962f.up.railway.app,http://localhost:3000
 
 # Frontend
-NEXT_PUBLIC_API_URL=https://myapp-dev-backend.railway.app
+NEXT_PUBLIC_API_URL=https://frontend-dev-7b28.up.railway.app
+NEXT_PUBLIC_WS_URL=wss://backend-dev-962f.up.railway.app/ws/updates
 NEXT_PUBLIC_ENV=development
 NEXT_PUBLIC_GA_ID=GA-DEV-ID
 ```
 
 ## 4. **Workflow для разработки**
 
-### 🔄 **Development → Staging → Production**
+### 🔄 **Development → Production**
 
 ```bash
 # 1. Разработка в develop
@@ -113,11 +42,6 @@ git checkout develop
 git add .
 git commit -m "feat: new feature"
 git push origin develop
-
-# 2. Merge в staging для тестирования
-git checkout staging
-git merge develop
-git push origin staging
 
 # 3. После успешного тестирования → production
 git checkout main
@@ -129,7 +53,6 @@ git push origin main
 
 ### Railway автоматически деплоит:
 - `develop` → Development environment
-- `staging` → Staging environment  
 - `main` → Production environment
 
 ## 6. **Настройка CORS для разных окружений**
@@ -145,16 +68,12 @@ API_ENV = os.getenv("API_ENV", "development")
 # Настройка CORS в зависимости от окружения
 if API_ENV == "production":
     allowed_origins = [
-        "https://myapp-prod.railway.app",
-    ]
-elif API_ENV == "staging":
-    allowed_origins = [
-        "https://myapp-staging.railway.app",
+        "backend-production-7dfe.up.railway.app",
     ]
 else:  # development
     allowed_origins = [
         "http://localhost:3000",
-        "https://myapp-dev.railway.app",
+        "https://backend-dev-962f.up.railway.app",
     ]
 
 app.add_middleware(

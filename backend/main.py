@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_session
@@ -6,13 +6,40 @@ import crud
 import schemas
 from typing import List
 import random
+import asyncio
+import logging
+from websocket_manager import manager
+from db_listener import start_db_listener, stop_db_listener
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Настройка CORS для работы с Next.js фронтендом
+# Настройка CORS для работы с Next.js фронтендом и WebSocket
+import os
+
+# Получаем окружение
+API_ENV = os.getenv("API_ENV", "development")
+
+# Настройка CORS в зависимости от окружения
+if API_ENV == "production":
+    allowed_origins = [
+        "https://frontend-production-8178.up.railway.app",
+        "https://backend-production-7dfe.up.railway.app",
+    ]
+else:  # development
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://frontend-dev-7b28.up.railway.app",
+        "https://backend-dev-962f.up.railway.app",
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],  # Next.js dev server
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -112,5 +139,61 @@ async def get_product_variant_detail(product_slug: str, region_slug: str, sessio
             slug=variant.region.slug,
         ),
     )
+
+
+# WebSocket эндпоинт для real-time обновлений
+@app.websocket("/ws/updates")
+async def websocket_endpoint(websocket: WebSocket):
+    """WebSocket эндпоинт для получения real-time обновлений"""
+    await manager.connect(websocket)
+    logger.info("Новое WebSocket соединение")
+    
+    try:
+        # Отправляем приветственное сообщение
+        await manager.send_personal_message(
+            '{"type": "CONNECTION_ESTABLISHED", "message": "WebSocket соединение установлено"}', 
+            websocket
+        )
+        
+        # Ожидаем сообщения от клиента (пока просто слушаем)
+        while True:
+            try:
+                data = await websocket.receive_text()
+                # Обработка сообщений от клиента может быть добавлена в будущем
+            except WebSocketDisconnect:
+                logger.info("WebSocket клиент отключился")
+                break
+            except Exception as e:
+                logger.error(f"Ошибка при получении сообщения от WebSocket клиента: {e}")
+                break
+                
+    except WebSocketDisconnect:
+        logger.info("WebSocket соединение было закрыто")
+    except Exception as e:
+        logger.error(f"Ошибка в WebSocket соединении: {e}")
+    finally:
+        manager.disconnect(websocket)
+
+
+# События жизненного цикла приложения
+@app.on_event("startup")
+async def startup_event():
+    """Запуск фоновых задач при старте приложения"""
+    logger.info("Запуск FastAPI приложения...")
+    
+    # Запускаем DB listener в фоновом режиме
+    asyncio.create_task(start_db_listener())
+    logger.info("Database listener запущен в фоне")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Очистка ресурсов при остановке приложения"""
+    logger.info("Остановка FastAPI приложения...")
+    
+    # Останавливаем DB listener
+    await stop_db_listener()
+    logger.info("Database listener остановлен")
+
 
 # Статические файлы теперь обрабатываются Next.js фронтендом 

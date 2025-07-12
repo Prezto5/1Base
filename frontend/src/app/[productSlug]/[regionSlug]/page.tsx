@@ -1,10 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getProductVariantDetail, getRegionsForProduct, getAllProducts } from '@/lib/api';
-import ProductCard from '@/components/ProductCard';
-import RegionSelector from '@/components/RegionSelector';
-import ProductStats from '@/components/ProductStats';
-import ProductTags from '@/components/ProductTags';
+import ProductView from '@/components/ProductView';
 
 interface PageProps {
   params: Promise<{
@@ -113,31 +110,21 @@ export default async function ProductRegionPage({ params }: PageProps) {
     };
 
     return (
-      <div className="min-h-screen bg-gray-50 text-gray-900">
+      <>
         {/* JSON-LD микроразметка */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         
-        <div className="container max-w-4xl mx-auto py-8 px-4">
-          {/* Селектор региона */}
-          <RegionSelector
-            regions={regions}
-            currentRegionSlug={resolvedParams.regionSlug}
-            productSlug={resolvedParams.productSlug}
-          />
-
-          {/* Карточка продукта */}
-          <ProductCard productVariant={productVariant} />
-
-          {/* Теги */}
-          <ProductTags tags={productVariant.product.tags} />
-
-          {/* Статистика */}
-          <ProductStats productVariant={productVariant} />
-        </div>
-      </div>
+        {/* Используем новый ProductView компонент с real-time обновлениями */}
+        <ProductView 
+          initialVariant={productVariant}
+          regions={regions}
+          productSlug={resolvedParams.productSlug}
+          regionSlug={resolvedParams.regionSlug}
+        />
+      </>
     );
   } catch (error) {
     console.error('Error loading product data:', error);
