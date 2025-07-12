@@ -32,8 +32,29 @@ interface RealtimeDataProviderProps {
 export function RealtimeDataProvider({ children }: RealtimeDataProviderProps) {
   const [updatedVariants, setUpdatedVariants] = useState<Map<number, ProductVariantDetail>>(new Map());
   
-  // Получаем WebSocket URL из переменных окружения
-  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/ws/updates';
+  // Получаем WebSocket URL из переменных окружения или формируем динамически
+  const getWebSocketUrl = () => {
+    // Сначала пробуем использовать явно заданный WS URL
+    if (process.env.NEXT_PUBLIC_WS_URL) {
+      console.log('🔗 Используется явный WebSocket URL:', process.env.NEXT_PUBLIC_WS_URL);
+      return process.env.NEXT_PUBLIC_WS_URL;
+    }
+    
+    // Если WS URL не задан, формируем на основе API URL
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (apiUrl) {
+      // Преобразуем http/https в ws/wss
+      const wsUrl = apiUrl.replace(/^http/, 'ws') + '/ws/updates';
+      console.log('🔗 Автоматически сформированный WebSocket URL:', wsUrl);
+      return wsUrl;
+    }
+    
+    // Fallback для локальной разработки
+    console.log('🔗 Используется fallback WebSocket URL для локальной разработки');
+    return 'ws://localhost:8000/ws/updates';
+  };
+  
+  const wsUrl = getWebSocketUrl();
   
   // Мемоизируем обработчики чтобы предотвратить пересоздание WebSocket соединения
   const handleWebSocketMessage = useCallback((message: WebSocketMessage) => {
@@ -41,6 +62,13 @@ export function RealtimeDataProvider({ children }: RealtimeDataProviderProps) {
     switch (message.type) {
       case 'CONNECTION_ESTABLISHED':
         console.log('🎉 WebSocket соединение установлено');
+        break;
+        
+      case 'PING':
+        // Отвечаем на ping сообщения для поддержания соединения
+        console.log('🏓 Получен PING, отправляем PONG');
+        // Браузер автоматически отвечает на WebSocket ping/pong, 
+        // но можно добавить дополнительную логику если нужно
         break;
         
       case 'PRODUCT_VARIANT_UPDATE':

@@ -9,6 +9,7 @@ DATABASE_URL=postgresql://postgres:ZFbbYebbkRrtFpRDQTyRwnVotKdAHLUE@shinkansen.p
 API_ENV=production
 DEBUG=false
 CORS_ORIGINS=https://myapp-prod.railway.app
+FRONTEND_URL=https://frontend-production-8178.up.railway.app
 
 # Frontend
 NEXT_PUBLIC_API_URL=https://frontend-production-8178.up.railway.app
@@ -24,9 +25,10 @@ DATABASE_URL=postgresql://dev_user:dev_pass@dev_host:5432/dev_db
 API_ENV=development
 DEBUG=true
 CORS_ORIGINS=https://backend-dev-962f.up.railway.app,http://localhost:3000
+FRONTEND_URL=https://frontend-dev-7b28.up.railway.app
 
 # Frontend
-NEXT_PUBLIC_API_URL=https://frontend-dev-7b28.up.railway.app
+NEXT_PUBLIC_API_URL=https://backend-dev-962f.up.railway.app
 NEXT_PUBLIC_WS_URL=wss://backend-dev-962f.up.railway.app/ws/updates
 NEXT_PUBLIC_ENV=development
 NEXT_PUBLIC_GA_ID=GA-DEV-ID

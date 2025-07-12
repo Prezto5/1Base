@@ -71,6 +71,18 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
 
     try {
       console.log(`🔌 WebSocket подключение к: ${url}`);
+      
+      // Дополнительная диагностика URL
+      if (url.startsWith('wss://')) {
+        console.log('✅ Используется безопасный WebSocket (WSS)');
+      } else if (url.startsWith('ws://')) {
+        console.log('⚠️ Используется небезопасный WebSocket (WS)');
+      } else {
+        console.error('❌ Некорректный WebSocket URL:', url);
+        setConnectionError('Некорректный WebSocket URL');
+        return;
+      }
+      
       const ws = new WebSocket(url);
       websocketRef.current = ws;
       isManualCloseRef.current = false;
@@ -78,7 +90,7 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
       ws.onopen = () => {
         if (!mountedRef.current) return;
         
-        console.log('✅ WebSocket подключен');
+        console.log('✅ WebSocket подключен к:', url);
         setIsConnected(true);
         setConnectionError(null);
         reconnectAttemptsRef.current = 0;
@@ -91,7 +103,10 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
         
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
-          console.log('📨 WebSocket сообщение:', message.type);
+          // Логируем только важные сообщения, пропускаем PING
+          if (message.type !== 'PING') {
+            console.log('📨 WebSocket сообщение:', message.type);
+          }
           setLastMessage(message);
           options.onMessage?.(message);
         } catch {
@@ -103,6 +118,16 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
         if (!mountedRef.current) return;
         
         console.log(`🔌 WebSocket закрыт: код ${event.code}, причина: ${event.reason || 'не указана'}`);
+        
+        // Дополнительная диагностика кодов закрытия
+        if (event.code === 1006) {
+          console.error('❌ Аномальное закрытие соединения (возможно проблема с сетью или CORS)');
+        } else if (event.code === 1015) {
+          console.error('❌ TLS handshake failure (проблема с сертификатом)');
+        } else if (event.code === 1002) {
+          console.error('❌ Protocol error');
+        }
+        
         setIsConnected(false);
         websocketRef.current = null;
         options.onDisconnect?.();
@@ -129,13 +154,13 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}): Us
       ws.onerror = () => {
         if (!mountedRef.current) return;
         
-        console.error('❌ WebSocket ошибка соединения');
+        console.error('❌ WebSocket ошибка соединения с:', url);
         setConnectionError('Ошибка WebSocket соединения');
         options.onError?.(new Event('error'));
       };
 
     } catch {
-      console.error('❌ Не удалось создать WebSocket соединение');
+      console.error('❌ Не удалось создать WebSocket соединение с:', url);
       setConnectionError('Не удалось создать WebSocket соединение');
     }
   }, [url, options, shouldReconnect, getReconnectDelay, maxReconnectAttempts, clearReconnectTimeout]);

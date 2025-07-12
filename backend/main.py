@@ -20,8 +20,9 @@ app = FastAPI()
 # Настройка CORS для работы с Next.js фронтендом и WebSocket
 import os
 
-# Получаем окружение
+# Получаем окружение и URL фронтенда
 API_ENV = os.getenv("API_ENV", "development")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "")
 
 # Настройка CORS в зависимости от окружения
 if API_ENV == "production":
@@ -29,6 +30,9 @@ if API_ENV == "production":
         "https://frontend-production-8178.up.railway.app",
         "https://backend-production-7dfe.up.railway.app",
     ]
+    # Добавляем URL фронтенда если он задан
+    if FRONTEND_URL:
+        allowed_origins.append(FRONTEND_URL)
 else:  # development
     allowed_origins = [
         "http://localhost:3000",
@@ -36,6 +40,14 @@ else:  # development
         "https://frontend-dev-7b28.up.railway.app",
         "https://backend-dev-962f.up.railway.app",
     ]
+    # Добавляем URL фронтенда если он задан  
+    if FRONTEND_URL:
+        allowed_origins.append(FRONTEND_URL)
+
+# Логируем для отладки
+logger.info(f"API_ENV: {API_ENV}")
+logger.info(f"FRONTEND_URL: {FRONTEND_URL}")
+logger.info(f"Allowed CORS origins: {allowed_origins}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -155,17 +167,29 @@ async def websocket_endpoint(websocket: WebSocket):
             websocket
         )
         
-        # Ожидаем сообщения от клиента (пока просто слушаем)
-        while True:
+        # Создаем задачу для ping-pong механизма
+        ping_task = asyncio.create_task(send_ping_periodically(websocket))
+        
+        try:
+            # Ожидаем сообщения от клиента
+            while True:
+                try:
+                    data = await websocket.receive_text()
+                    # Обработка сообщений от клиента может быть добавлена в будущем
+                    logger.info(f"Получено сообщение от клиента: {data}")
+                except WebSocketDisconnect:
+                    logger.info("WebSocket клиент отключился")
+                    break
+                except Exception as e:
+                    logger.error(f"Ошибка при получении сообщения от WebSocket клиента: {e}")
+                    break
+        finally:
+            # Отменяем ping задачу при отключении
+            ping_task.cancel()
             try:
-                data = await websocket.receive_text()
-                # Обработка сообщений от клиента может быть добавлена в будущем
-            except WebSocketDisconnect:
-                logger.info("WebSocket клиент отключился")
-                break
-            except Exception as e:
-                logger.error(f"Ошибка при получении сообщения от WebSocket клиента: {e}")
-                break
+                await ping_task
+            except asyncio.CancelledError:
+                pass
                 
     except WebSocketDisconnect:
         logger.info("WebSocket соединение было закрыто")
@@ -173,6 +197,22 @@ async def websocket_endpoint(websocket: WebSocket):
         logger.error(f"Ошибка в WebSocket соединении: {e}")
     finally:
         manager.disconnect(websocket)
+
+
+async def send_ping_periodically(websocket: WebSocket):
+    """Отправляет ping сообщения каждые 25 секунд для поддержания соединения"""
+    try:
+        while True:
+            await asyncio.sleep(25)  # Пинг каждые 25 секунд
+            try:
+                await websocket.send_text('{"type": "PING", "timestamp": "' + str(asyncio.get_event_loop().time()) + '"}')
+                logger.debug("Ping отправлен")
+            except Exception as e:
+                logger.warning(f"Ошибка отправки ping: {e}")
+                break
+    except asyncio.CancelledError:
+        logger.info("Ping задача отменена")
+        raise
 
 
 # События жизненного цикла приложения
