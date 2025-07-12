@@ -93,10 +93,14 @@ export function RealtimeDataProvider({ children }: RealtimeDataProviderProps) {
 
   const onConnect = useCallback(() => {
     console.log('✅ Real-time контекст: WebSocket подключен');
+    // Очищаем кеш при новом подключении чтобы избежать старых данных
+    setUpdatedVariants(new Map());
   }, []);
 
   const onDisconnect = useCallback(() => {
     console.log('❌ Real-time контекст: WebSocket отключен');
+    // Очищаем кеш при отключении чтобы избежать показа старых данных
+    setUpdatedVariants(new Map());
   }, []);
 
   // Мемоизируем options объект

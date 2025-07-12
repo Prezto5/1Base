@@ -3,6 +3,9 @@ import { notFound } from 'next/navigation';
 import { getProductVariantDetail, getRegionsForProduct, getAllProducts } from '@/lib/api';
 import ProductView from '@/components/ProductView';
 
+// Принудительно делаем страницы динамическими для получения свежих данных
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{
     productSlug: string;

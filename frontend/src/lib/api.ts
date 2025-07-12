@@ -9,12 +9,13 @@ class ApiError extends Error {
   }
 }
 
-async function fetchAPI<T>(endpoint: string, revalidateTime: number = 3600): Promise<T> {
+async function fetchAPI<T>(endpoint: string, revalidateTime: number = 0): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
   
   try {
     const response = await fetch(url, {
-      next: { revalidate: revalidateTime }
+      next: { revalidate: revalidateTime },
+      cache: revalidateTime === 0 ? 'no-store' : 'default'
     });
     
     if (!response.ok) {
@@ -31,16 +32,16 @@ async function fetchAPI<T>(endpoint: string, revalidateTime: number = 3600): Pro
 }
 
 export async function getAllProducts(): Promise<ProductInfo[]> {
-  return fetchAPI<ProductInfo[]>('/api/v1/products', 86400); // 24 часа
+  return fetchAPI<ProductInfo[]>('/api/v1/products', 0); // Без кеширования
 }
 
 export async function getProductVariantDetail(
   productSlug: string, 
   regionSlug: string
 ): Promise<ProductVariantDetail> {
-  return fetchAPI<ProductVariantDetail>(`/api/v1/products/${productSlug}/${regionSlug}`);
+  return fetchAPI<ProductVariantDetail>(`/api/v1/products/${productSlug}/${regionSlug}`, 0); // Без кеширования
 }
 
 export async function getRegionsForProduct(productSlug: string): Promise<RegionInfo[]> {
-  return fetchAPI<RegionInfo[]>(`/api/v1/products/${productSlug}/regions`);
+  return fetchAPI<RegionInfo[]>(`/api/v1/products/${productSlug}/regions`, 0); // Без кеширования
 } 

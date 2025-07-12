@@ -5,6 +5,9 @@ import { getAllProducts } from "@/lib/api";
 import ProductSidebar from "@/components/ProductSidebar";
 import { RealtimeDataProvider } from "@/context/RealtimeDataContext";
 
+// Принудительно делаем layout динамическим для получения свежих данных
+export const dynamic = 'force-dynamic';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
