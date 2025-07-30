@@ -1,0 +1,91 @@
+---
+description: AI AGENT COMMANDS
+alwaysApply: false
+---
+
+```JSON
+{"SYSTEM": [
+  {"comand-search": "Find the right command in "# COMMANDS" follow the instructions. Do not scan the entire file"},
+  {"memory": "remember solution patterns"},
+  {"comand-add": "Look at the examples of commands already added, and generate commands in the same format"},
+  {"translate": "If you see something in Russian, translate it into English (the most understandable, declarative language)"},
+  {"respond": "5-10 words after task completion in Russian"}
+]}
+```
+
+# COMMANDS
+
+## HyperUI Setup for Astro
+## GitHub CLI Basic Commands
+
+
+# COMMANDS
+
+
+
+
+
+## HyperUI Setup for Astro
+
+```json
+{
+  "role": "HyperUISetup",
+  "goal": "Prepare Astro project for HyperUI components usage",
+  "steps": [
+    {
+      "cmd": "echo 'Checking Tailwind CSS installation...'",
+
+    },
+    {
+      "cmd": "npm list tailwindcss @tailwindcss/vite",
+
+    },
+    {
+      "cmd": "mkdir -p src/components/hyperui",
+
+    },
+    {
+      "cmd": "echo 'HyperUI ready - visit https://www.hyperui.dev/ to copy components'",
+
+    }
+  ]
+}
+
+## GitHub CLI Basic Commands
+
+```json
+{
+  "role": "GitHubCLI",
+  "goal": "Basic GitHub CLI operations for repository management",
+  "steps": [
+    {
+      "cmd": "gh auth login",
+      "description": "Authenticate with GitHub (choose HTTPS, follow browser auth)"
+    },
+    {
+      "cmd": "gh repo clone OWNER/REPO",
+      "description": "Clone repository to local machine"
+    },
+    {
+      "cmd": "gh repo create PROJECT_NAME --public",
+      "description": "Create new public repository"
+    },
+    {
+      "cmd": "gh pr create --title 'TITLE' --body 'DESCRIPTION'",
+      "description": "Create pull request from current branch"
+    },
+    {
+      "cmd": "gh pr list",
+      "description": "List all pull requests"
+    },
+    {
+      "cmd": "gh repo view",
+      "description": "View repository details"
+    },
+    {
+      "cmd": "gh issue create --title 'TITLE' --body 'DESCRIPTION'",
+      "description": "Create new issue"
+    }
+  ]
+}
+```
