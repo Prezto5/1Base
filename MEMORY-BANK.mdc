@@ -1,0 +1,60 @@
+
+# ЭТО ОПЕРАТИВНАЯ ПАМЯТЬ ИИ АГЕНТОВ
+
+# ПРАВИЛЬНЫЙ ВИД ДАННЫХ:
+
+# Добавление ключевой информации
+# Эту информацию будет видеть только ИИ агенты, поэтому не нужно писать для пользователя.
+
+
+#ОСНОВНЫЕ ПРАВИЛА:
+
+# Информация добавляется только в указанном формате.
+# Не указывай теги, только ключевой код.
+# Вседа пиши только в своем разделе
+
+
+<MEMORY-BANK-RULES-FOR-AGENTS>
+
+<Problem-Solving>
+
+> *(Job Title)*
+> Ключевой код 
+
+</Problem-Solving>
+
+<Project-Flow>
+
+> **[ДАТА Время]** *(Job Title)*
+> **РЕЗУЛЬТАТ:** что получили
+> **БЛОКЕРЫ:** что мешало (если были)
+
+</Project-Flow>
+
+
+
+</MEMORY-BANK-RULES-FOR-AGENTS>
+
+
+
+
+<MEMORY-BANK-CORE - Добавляй сюда информацию>
+<Problem-Solving>
+
+> *(AstroTailwindInstaller)*
+> npm create astro@latest my-app -- --template minimal --yes
+> cd my-app && npx astro add tailwind --yes  
+> edit src/pages/index.astro: import '../styles/global.css' + <h1 class='text-3xl font-bold text-blue-600'>Tailwind Работает!</h1>
+> npm run dev
+
+</Problem-Solving>
+
+<Project-Flow>
+
+> **[2024-12-26 Время]** *(AstroTailwindInstaller)*
+> **РЕЗУЛЬТАТ:** Astro + Tailwind v4 проект создан, dev сервер запущен
+> **БЛОКЕРЫ:** нет
+
+</Project-Flow>
+
+</MEMORY-BANK-CORE>

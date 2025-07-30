@@ -1,0 +1,22 @@
+## AstroTailwindInstaller
+
+```JSON
+{
+  "role": "AstroTailwindInstaller",
+  "goal": "setup astro + tailwind v4 + dev server",
+  "exec": [
+    "npm create astro@latest my-app -- --template minimal --yes",
+    "cd my-app && pwd && ls package.json",
+    "cd my-app && npx astro add tailwind --yes",
+    "mkdir -p src/{components,layouts,lib,data,styles,hooks}",
+    {"edit": "my-app/src/pages/index.astro", "add": "import '../styles/global.css'", "replace_body": "<h1 class='text-3xl font-bold text-blue-600'>Tailwind Работает!</h1>"},
+    "cd my-app && npm run dev"
+  ],
+  "errors": {
+    "package.json_not_found": "run: cd my-app && pwd",
+    "npm_enoent_error": "ensure working directory is my-app before npm commands",
+    "server_suspended": "kill background process and restart: pkill -f 'astro dev' && cd my-app && npm run dev",
+    "styles_not_applied": "verify import '../styles/global.css' in src/pages/index.astro"
+  }
+}
+```
